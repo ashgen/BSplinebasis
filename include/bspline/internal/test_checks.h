@@ -24,15 +24,15 @@
 // Empty definitions of the same macros.
 
 #define DURING_TEST_CHECK_VALIDITY() \
-  do {                               \
-  } while (false)
+    do {                             \
+    } while (false)
 
 #define DURING_TEST_CHECK_VALIDITY_OF(obj) \
-  do {                                     \
-  } while (false)
+    do {                                   \
+    } while (false)
 
-#endif  // BSPLINE_ADD_TEST_CHECKS
+#endif// BSPLINE_ADD_TEST_CHECKS
 
-#endif  // BSPLINE_DOXYGEN_IGNORE
+#endif// BSPLINE_DOXYGEN_IGNORE
 
-#endif  // BSPLINE_TEST_CHECKS_H
+#endif// BSPLINE_TEST_CHECKS_H

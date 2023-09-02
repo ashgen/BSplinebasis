@@ -16,17 +16,17 @@
 
 namespace bspline::examples::hydrogen {
 
-/**
+    /**
  * The orbital quantum number.
  */
-static constexpr int L = 1;
+    static constexpr int L = 1;
 
-/**
+    /**
  * Solves the radial hydrogen problem with a BSpline
  * basis.
  * @return Returns the (real) eigenenergies and the corresponding wavefunctions.
  */
-std::vector<Eigenspace> solveRadialHydrogen();
+    std::vector<Eigenspace> solveRadialHydrogen();
 
-}  // namespace bspline::examples::hydrogen
-#endif  // BSPLINE_EXAMPLES_HYDROGEN_H
+}// namespace bspline::examples::hydrogen
+#endif// BSPLINE_EXAMPLES_HYDROGEN_H

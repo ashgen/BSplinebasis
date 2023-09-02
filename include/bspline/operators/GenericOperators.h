@@ -15,33 +15,34 @@
  */
 namespace bspline::operators {
 
-/*!
+    /*!
  * Marker interface for operators. All proper operators must derive from this
  * interface.
  */
-class Operator {};
+    class Operator {
+    };
 
-/*!
+    /*!
  * Indicates whether the template parameter is an operator
  * type.
  *
  * @tparam O Template parameter.
  */
-template <typename O>
-inline constexpr bool is_operator_v =
-    std::is_base_of_v<Operator, std::remove_cv_t<std::remove_reference_t<O>>>;
+    template<typename O>
+    inline constexpr bool is_operator_v =
+            std::is_base_of_v<Operator, std::remove_cv_t<std::remove_reference_t<O>>>;
 
-/*!
+    /*!
  * Indicates whether both template parameters are operator
  * types.
  *
  * @tparam O1 First template parameter.
  * @tparam O2 Second template parameter.
  */
-template <typename O1, typename O2>
-inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
+    template<typename O1, typename O2>
+    inline constexpr bool are_operators_v = is_operator_v<O1> && is_operator_v<O2>;
 
-/*!
+    /*!
  * Helper method that applies an operator to a spline based on the
  * transformation of the coefficients on a single interval.
  *
@@ -53,47 +54,47 @@ inline constexpr bool are_operators_v = is_operator_v<O1> &&is_operator_v<O2>;
  * @returns The spline resulting from the application of this operator to the
  * spline.
  */
-template <typename T, size_t order, typename O,
-          std::enable_if_t<is_operator_v<O>, bool> = true>
-auto transformSpline(const O &op, const Spline<T, order> &spline) {
-  constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
+    template<typename T, size_t order, typename O,
+            std::enable_if_t<is_operator_v<O>, bool> = true>
+    auto transformSpline(const O &op, const Spline<T, order> &spline) {
+        constexpr size_t OUTPUT_SIZE = O::outputOrder(order) + 1;
 
-  const auto &oldCoefficients = spline.getCoefficients();
+        const auto &oldCoefficients = spline.getCoefficients();
 
-  std::vector<std::array<T, OUTPUT_SIZE>> newCoefficients;
-  newCoefficients.reserve(oldCoefficients.size());
+        std::vector<std::array<T, OUTPUT_SIZE>> newCoefficients;
+        newCoefficients.reserve(oldCoefficients.size());
 
-  const auto &support = spline.getSupport();
+        const auto &support = spline.getSupport();
 
-  for (size_t i = 0; i < oldCoefficients.size(); i++) {
-    const size_t absIndex = support.absoluteFromRelative(i);
-    newCoefficients.push_back(
-        op.transform(oldCoefficients[i], support.getGrid(), absIndex));
-  }
+        for (size_t i = 0; i < oldCoefficients.size(); i++) {
+            const size_t absIndex = support.absoluteFromRelative(i);
+            newCoefficients.push_back(
+                    op.transform(oldCoefficients[i], support.getGrid(), absIndex));
+        }
 
-  return Spline(spline.getSupport(), std::move(newCoefficients));
-}
+        return Spline(spline.getSupport(), std::move(newCoefficients));
+    }
 
-// ################## Generic Operator Definitions #######################
-// #######################################################################
+    // ################## Generic Operator Definitions #######################
+    // #######################################################################
 
-// #######################################################################
-// ########################## IdentityOperator ##############################
+    // #######################################################################
+    // ########################## IdentityOperator ##############################
 
-/*!
+    /*!
  * Represents the identity operator.
  */
-class IdentityOperator final : public Operator {
- public:
-  /*!
+    class IdentityOperator final : public Operator {
+    public:
+        /*!
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
+        static constexpr size_t outputOrder(size_t inputOrder) { return inputOrder; }
 
-  /*!
+        /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -106,15 +107,15 @@ class IdentityOperator final : public Operator {
    * @returns The polyomial coefficients arising from the application of the
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
-  std::array<T, size> transform(const std::array<T, size> &input,
-                                [[maybe_unused]] const support::Grid<T> &grid,
-                                [[maybe_unused]] size_t intervalIndex) const {
-    return input;
-  }
-};
+        template<typename T, size_t size>
+        std::array<T, size> transform(const std::array<T, size> &input,
+                                      [[maybe_unused]] const support::Grid<T> &grid,
+                                      [[maybe_unused]] size_t intervalIndex) const {
+            return input;
+        }
+    };
 
-/*!
+    /*!
  * Applies an operator to a spline.
  *
  * @param o The operator.
@@ -124,10 +125,10 @@ class IdentityOperator final : public Operator {
  * @returns The spline resulting from the application of the operator to the
  * spline.
  */
-template <typename O, typename S,
-          std::enable_if_t<is_operator_v<O> && is_spline_v<S>, bool> = true>
-auto operator*(const O &o, const S &s) {
-  return transformSpline(o, s);
-}
-}  // namespace bspline::operators
-#endif  // BSPLINE_OPERATORS_GENERICOPERATORS_H
+    template<typename O, typename S,
+            std::enable_if_t<is_operator_v<O> && is_spline_v<S>, bool> = true>
+    auto operator*(const O &o, const S &s) {
+        return transformSpline(o, s);
+    }
+}// namespace bspline::operators
+#endif// BSPLINE_OPERATORS_GENERICOPERATORS_H

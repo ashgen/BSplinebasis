@@ -15,12 +15,12 @@
 #include "misc.h"
 
 namespace bspline::examples::harmonic_oscillator {
-/**
+    /**
  * Solves the quantum mechanical harmonic oscillator problem with a BSpline
  * basis.
  * @return Returns the (real) eigenenergies and the corresponding wavefunctions.
  */
-std::vector<Eigenspace> solveHarmonicOscillator();
+    std::vector<Eigenspace> solveHarmonicOscillator();
 
-}  // namespace bspline::examples::harmonic_oscillator
-#endif  // BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H
+}// namespace bspline::examples::harmonic_oscillator
+#endif// BSPLINE_EXAMPLES_HARMONICOSCILLATOR_H

@@ -11,41 +11,41 @@
 #include <bspline/operators/GenericOperators.h>
 
 namespace bspline::operators {
-/*!
+    /*!
  * Represents the product of two operators.
  *
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-class OperatorProduct final : public Operator {
- private:
-  /*! The first (left) operator.*/
-  O1 _o1;
-  /*! The second (right) operator.*/
-  O2 _o2;
+    template<typename O1, typename O2,
+            std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+    class OperatorProduct final : public Operator {
+    private:
+        /*! The first (left) operator.*/
+        O1 _o1;
+        /*! The second (right) operator.*/
+        O2 _o2;
 
- public:
-  /*!
+    public:
+        /*!
    * Creates an OperatorProduct from two operators.
    *
    * @param o1 The first (left) operator.
    * @param o2 The second (right) ooperator.
    */
-  OperatorProduct(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
+        OperatorProduct(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)) {};
 
-  /*!
+        /*!
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return O1::outputOrder(O2::outputOrder(inputOrder));
-  }
+        static constexpr size_t outputOrder(size_t inputOrder) {
+            return O1::outputOrder(O2::outputOrder(inputOrder));
+        }
 
-  /*!
+        /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -58,16 +58,16 @@ class OperatorProduct final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const support::Grid<T> &grid,
-      size_t intervalIndex) const {
-    return _o1.transform(_o2.transform(input, grid, intervalIndex), grid,
-                         intervalIndex);
-  }
-};
+        template<typename T, size_t size>
+        std::array<T, outputOrder(size - 1) + 1> transform(
+                const std::array<T, size> &input, const support::Grid<T> &grid,
+                size_t intervalIndex) const {
+            return _o1.transform(_o2.transform(input, grid, intervalIndex), grid,
+                                 intervalIndex);
+        }
+    };
 
-/*!
+    /*!
  * The multiplication operator for two operators, returning an OperatorProduct.
  *
  * @param o1 The first (left) operator.
@@ -75,38 +75,38 @@ class OperatorProduct final : public Operator {
  * @tparam O1 The type of the first (left) operator.
  * @tparam O2 The type of the second (right) operator.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-OperatorProduct<O1, O2> operator*(O1 &&o1, O2 &&o2) {
-  return OperatorProduct(std::forward<O1>(o1), std::forward<O2>(o2));
-}
+    template<typename O1, typename O2,
+            std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+    OperatorProduct<O1, O2> operator*(O1 &&o1, O2 &&o2) {
+        return OperatorProduct(std::forward<O1>(o1), std::forward<O2>(o2));
+    }
 
-// ######################### OperatorProduct #############################
-// #######################################################################
+    // ######################### OperatorProduct #############################
+    // #######################################################################
 
-// #######################################################################
-// ########################### OperatorSum ###############################
+    // #######################################################################
+    // ########################### OperatorSum ###############################
 
-/*! Indicates which operation the OperatorSum is supposed to perform. */
-enum class AdditionOperation {
-  /*! Perform addition. */
-  ADDITION,
-  /*! Perform subtraction. */
-  SUBTRACTION,
-};
+    /*! Indicates which operation the OperatorSum is supposed to perform. */
+    enum class AdditionOperation {
+        /*! Perform addition. */
+        ADDITION,
+        /*! Perform subtraction. */
+        SUBTRACTION,
+    };
 
-/*!
+    /*!
  * Checks whether the operation is a valid oeration for OperatorSum.
  *
  * @tparam operation The operation type to be checked.
  */
-template <AdditionOperation operation>
-inline constexpr bool is_valid_operation_v = (operation ==
-                                              AdditionOperation::ADDITION) ||
-                                             (operation ==
-                                              AdditionOperation::SUBTRACTION);
+    template<AdditionOperation operation>
+    inline constexpr bool is_valid_operation_v = (operation ==
+                                                  AdditionOperation::ADDITION) ||
+                                                 (operation ==
+                                                  AdditionOperation::SUBTRACTION);
 
-/*!
+    /*!
  * Represents the sum or difference of two operators.
  *
  * @tparam O1 The type of the first operator.
@@ -114,18 +114,18 @@ inline constexpr bool is_valid_operation_v = (operation ==
  * @tparam operation Indicates whether the operators shall be added or
  * subtracted.
  */
-template <
-    typename O1, typename O2, AdditionOperation operation,
-    std::enable_if_t<are_operators_v<O1, O2> && is_valid_operation_v<operation>,
-                     bool> = true>
-class OperatorSum final : public Operator {
- private:
-  /*! The first operator.*/
-  O1 _o1;
-  /*! The second operator.*/
-  O2 _o2;
+    template<
+            typename O1, typename O2, AdditionOperation operation,
+            std::enable_if_t<are_operators_v<O1, O2> && is_valid_operation_v<operation>,
+                    bool> = true>
+    class OperatorSum final : public Operator {
+    private:
+        /*! The first operator.*/
+        O1 _o1;
+        /*! The second operator.*/
+        O2 _o2;
 
-  /*!
+        /*!
    * Adds the smaller array to the larger array in place and returns the larger
    * array.
    *
@@ -136,39 +136,39 @@ class OperatorSum final : public Operator {
    * @tparam sizeb The size of b.
    * @returns The sum of the two input arrays.
    */
-  template <typename T, size_t sizea, size_t sizeb>
-  static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
-                                                    std::array<T, sizeb> &b) {
-    if constexpr (sizeb > sizea) {
-      return add(b, a);
-    } else {
-      for (size_t i = 0; i < sizeb; i++) {
-        a[i] += b[i];
-      }
-      return a;
-    }
-  }
+        template<typename T, size_t sizea, size_t sizeb>
+        static std::array<T, std::max(sizea, sizeb)> &add(std::array<T, sizea> &a,
+                                                          std::array<T, sizeb> &b) {
+            if constexpr (sizeb > sizea) {
+                return add(b, a);
+            } else {
+                for (size_t i = 0; i < sizeb; i++) {
+                    a[i] += b[i];
+                }
+                return a;
+            }
+        }
 
- public:
-  /*!
+    public:
+        /*!
    * Creates an OperatorSum from two operators.
    *
    * @param o1 The first operator.
    * @param o2 The second ooperator.
    */
-  OperatorSum(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)){};
+        OperatorSum(O1 o1, O2 o2) : _o1(std::move(o1)), _o2(std::move(o2)) {};
 
-  /*!
+        /*!
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return std::max(O1::outputOrder(inputOrder), O2::outputOrder(inputOrder));
-  }
+        static constexpr size_t outputOrder(size_t inputOrder) {
+            return std::max(O1::outputOrder(inputOrder), O2::outputOrder(inputOrder));
+        }
 
-  /*!
+        /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -181,25 +181,25 @@ class OperatorSum final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <typename T, size_t size>
-  std::array<T, outputOrder(size - 1) + 1> transform(
-      const std::array<T, size> &input, const support::Grid<T> &grid,
-      size_t intervalIndex) const {
-    auto a = _o1.transform(input, grid, intervalIndex);
-    auto b = _o2.transform(input, grid, intervalIndex);
+        template<typename T, size_t size>
+        std::array<T, outputOrder(size - 1) + 1> transform(
+                const std::array<T, size> &input, const support::Grid<T> &grid,
+                size_t intervalIndex) const {
+            auto a = _o1.transform(input, grid, intervalIndex);
+            auto b = _o2.transform(input, grid, intervalIndex);
 
-    // Negate b if subtraction is requested.
-    if constexpr (operation == AdditionOperation::SUBTRACTION) {
-      for (T &el : b) {
-        el *= static_cast<T>(-1);
-      }
-    }
+            // Negate b if subtraction is requested.
+            if constexpr (operation == AdditionOperation::SUBTRACTION) {
+                for (T &el: b) {
+                    el *= static_cast<T>(-1);
+                }
+            }
 
-    return add(a, b);
-  }
-};
+            return add(a, b);
+        }
+    };
 
-/*!
+    /*!
  * The addition operator for two operators, returning an OperatorSum.
  *
  * @param o1 The first operator.
@@ -208,14 +208,14 @@ class OperatorSum final : public Operator {
  * @tparam O2 The type of the second operator.
  * @returns The sum of the two input operators.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-auto operator+(O1 &&o1, O2 &&o2) {
-  return OperatorSum<O1, O2, AdditionOperation::ADDITION>(std::forward<O1>(o1),
-                                                          std::forward<O2>(o2));
-}
+    template<typename O1, typename O2,
+            std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+    auto operator+(O1 &&o1, O2 &&o2) {
+        return OperatorSum<O1, O2, AdditionOperation::ADDITION>(std::forward<O1>(o1),
+                                                                std::forward<O2>(o2));
+    }
 
-/*!
+    /*!
  * The subtraction operator for two operators, returning an OperatorSum.
  *
  * @param o1 The first operator.
@@ -224,12 +224,12 @@ auto operator+(O1 &&o1, O2 &&o2) {
  * @tparam O2 The type of the second operator.
  * @returns the difference of the two input operators.
  */
-template <typename O1, typename O2,
-          std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
-auto operator-(O1 &&o1, O2 &&o2) {
-  return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(
-      std::forward<O1>(o1), std::forward<O2>(o2));
-}
+    template<typename O1, typename O2,
+            std::enable_if_t<are_operators_v<O1, O2>, bool> = true>
+    auto operator-(O1 &&o1, O2 &&o2) {
+        return OperatorSum<O1, O2, AdditionOperation::SUBTRACTION>(
+                std::forward<O1>(o1), std::forward<O2>(o2));
+    }
 
-}  // namespace bspline::operators
-#endif  // BSPLINE_OPERATORS_COMPOUNDOPERATORS_H
+}// namespace bspline::operators
+#endif// BSPLINE_OPERATORS_COMPOUNDOPERATORS_H

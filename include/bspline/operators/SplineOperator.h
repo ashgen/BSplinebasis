@@ -15,37 +15,37 @@
 
 namespace bspline::operators {
 
-/*!
+    /*!
  * Implements the operator representation of a Spline.
  *
  * @tparam T The data type of the spline.
  * @tparam order The order of the spline.
  */
-template <typename T, size_t order>
-class SplineOperator final : public Operator {
- private:
-  /*! The spline which this operator represents. */
-  Spline<T, order> _s;
+    template<typename T, size_t order>
+    class SplineOperator final : public Operator {
+    private:
+        /*! The spline which this operator represents. */
+        Spline<T, order> _s;
 
- public:
-  /*!
+    public:
+        /*!
    * Constructor constructing a SplineOperator from a Spline.
    *
    * @param s The spline.
    */
-  SplineOperator(Spline<T, order> s) : _s(std::move(s)){};
+        SplineOperator(Spline<T, order> s) : _s(std::move(s)) {};
 
-  /*!
+        /*!
    * Returns the order of the output spline for a given input order.
    *
    * @param inputOrder the order of the input spline.
    * @returns The output spline-order for a given input input order.
    */
-  static constexpr size_t outputOrder(size_t inputOrder) {
-    return inputOrder + order;
-  }
+        static constexpr size_t outputOrder(size_t inputOrder) {
+            return inputOrder + order;
+        }
 
-  /*!
+        /*!
    * Applies the operator to a set of coefficients (representing a polynomial on
    * one interval).
    *
@@ -60,33 +60,33 @@ class SplineOperator final : public Operator {
    * @returns The polyomial coefficients arising from the application of this
    * operator to the input coefficients.
    */
-  template <size_t size>
-  auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
-                 size_t intervalIndex) const {
-    static_assert(size >= 1);
-    constexpr size_t OUTPUT_SIZE = outputOrder(size - 1) + 1;
+        template<size_t size>
+        auto transform(const std::array<T, size> &input, const support::Grid<T> &grid,
+                       size_t intervalIndex) const {
+            static_assert(size >= 1);
+            constexpr size_t OUTPUT_SIZE = outputOrder(size - 1) + 1;
 
-    if (_s.getSupport().getGrid() != grid) {
-      throw exceptions::BSplineException(ErrorCode::DIFFERING_GRIDS);
-    }
+            if (_s.getSupport().getGrid() != grid) {
+                throw exceptions::BSplineException(ErrorCode::DIFFERING_GRIDS);
+            }
 
-    const auto relativeIndex =
-        _s.getSupport().relativeFromAbsolute(intervalIndex);
+            const auto relativeIndex =
+                    _s.getSupport().relativeFromAbsolute(intervalIndex);
 
-    auto retVal = internal::make_array<T, OUTPUT_SIZE>(static_cast<T>(0));
+            auto retVal = internal::make_array<T, OUTPUT_SIZE>(static_cast<T>(0));
 
-    if (relativeIndex) {
-      // The interval is part of the Spline's support.
-      const auto &coeffs = _s.getCoefficients()[*relativeIndex];
+            if (relativeIndex) {
+                // The interval is part of the Spline's support.
+                const auto &coeffs = _s.getCoefficients()[*relativeIndex];
 
-      for (size_t i = 0; i < input.size(); i++) {
-        for (size_t j = 0; j < coeffs.size(); j++) {
-          retVal[i + j] += input[i] * coeffs[j];
+                for (size_t i = 0; i < input.size(); i++) {
+                    for (size_t j = 0; j < coeffs.size(); j++) {
+                        retVal[i + j] += input[i] * coeffs[j];
+                    }
+                }
+            }
+            return retVal;
         }
-      }
-    }
-    return retVal;
-  }
-};
-}  // namespace bspline::operators
-#endif  // BSPLINE_OPERATORS_SPLINEOPERATOR_H
+    };
+}// namespace bspline::operators
+#endif// BSPLINE_OPERATORS_SPLINEOPERATOR_H

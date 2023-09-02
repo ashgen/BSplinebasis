@@ -16,7 +16,7 @@
 
 namespace bspline::examples::diffusion {
 
-/**
+    /**
  * Solves the steady state of the diffusion equation with the given (spatially
  * inhomogeneous) diffusion coefficient and the boundary values.
  * @param diffusionCoeff A spline representing the diffusion coefficient. Must
@@ -25,8 +25,8 @@ namespace bspline::examples::diffusion {
  * @param endValue The concentration at the end of the domain.
  * @return Returns the (real) eigenenergies and the steady-state solution.
  */
-Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
-                                 data_t endValue);
+    Spline solveDiffusionSteadyState(PSpline diffusionCoeff, data_t startValue,
+                                     data_t endValue);
 
-}  // namespace bspline::examples::diffusion
-#endif  // BSPLINE_EXAMPLES_DIFFUSION_H
+}// namespace bspline::examples::diffusion
+#endif// BSPLINE_EXAMPLES_DIFFUSION_H
