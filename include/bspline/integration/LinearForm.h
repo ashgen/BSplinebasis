@@ -79,14 +79,20 @@ namespace bspline::integration {
 
             T result = static_cast<T>(0);
 
+            // Optimization: Cache start index and use direct grid access
+            // inside the tight loop to avoid bounds checking overhead from
+            // `absoluteFromRelative` and the generic Support bounds checker.
+            const auto absStartIndex = a.getSupport().getStartIndex();
+            const auto &grid = a.getSupport().getGrid();
+
             for (size_t i = 0; i < nintervals; i++) {
-                const size_t absIndex = a.getSupport().absoluteFromRelative(i);
+                const size_t absIndex = absStartIndex + i;
                 const T dxhalf =
-                        (a.getSupport()[i + 1] - a.getSupport()[i]) / static_cast<T>(2);
+                        (grid[absIndex + 1] - grid[absIndex]) / static_cast<T>(2);
 
                 result +=
                         evaluateInterval(_o.transform(a.getCoefficients()[i],
-                                                      a.getSupport().getGrid(), absIndex),
+                                                      grid, absIndex),
                                          dxhalf);
             }
             return result;

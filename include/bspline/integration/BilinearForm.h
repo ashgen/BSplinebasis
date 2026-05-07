@@ -116,16 +116,20 @@ namespace bspline::integration {
 
             T result = static_cast<T>(0);
 
+            // Optimization: Cache start indices and perform simple pointer arithmetic
+            // inside the tight loop to avoid bounds checking overhead from
+            // `intervalIndexFromAbsolute` / `absoluteFromRelative`.
+            const auto aStartIndex = a.getSupport().getStartIndex();
+            const auto bStartIndex = b.getSupport().getStartIndex();
+            const auto absStartIndex = integrandSupport.getStartIndex();
+
             for (size_t interv = 0; interv < nintervals; interv++) {
-                const auto absIndex = integrandSupport.absoluteFromRelative(interv);
+                const auto absIndex = absStartIndex + interv;
 
-                const auto aIndex =
-                        a.getSupport().intervalIndexFromAbsolute(absIndex).value();
-                const auto bIndex =
-                        b.getSupport().intervalIndexFromAbsolute(absIndex).value();
+                const auto aIndex = absIndex - aStartIndex;
+                const auto bIndex = absIndex - bStartIndex;
 
-                const T dxhalf = (a.getSupport()[aIndex + 1] - a.getSupport()[aIndex]) /
-                                 static_cast<T>(2);
+                const T dxhalf = (grid[absIndex + 1] - grid[absIndex]) / static_cast<T>(2);
 
                 result += evaluateInterval(
                         _o1.transform(a.getCoefficients()[aIndex], grid, absIndex),
