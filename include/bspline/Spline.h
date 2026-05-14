@@ -374,11 +374,18 @@ namespace bspline {
             std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
                     nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
 
+            const auto thisStart = _support.getStartIndex();
+            const auto aStart = a.getSupport().getStartIndex();
+
             for (size_t i = 0; i < nintervals; i++) {
                 const auto ai = newSupport.absoluteFromRelative(i);
 
-                auto thisRelIndex = _support.intervalIndexFromAbsolute(ai).value();
-                auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(ai).value();
+                // PERFORMANCE OPTIMIZATION:
+                // Replaced slow 'intervalIndexFromAbsolute(ai).value()' binary-search calls
+                // with direct constant-time pointer math since the intersection support
+                // guarantees contiguous overlap.
+                const auto thisRelIndex = ai - thisStart;
+                const auto aRelIndex = ai - aStart;
 
                 const auto &thiscoeffs = _coefficients[thisRelIndex];
                 const auto &acoeffs = a.getCoefficients()[aRelIndex];
@@ -415,22 +422,31 @@ namespace bspline {
 
             std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients(nintervals);
 
+            const auto thisStart = _support.empty() ? 0 : _support.getStartIndex();
+            const auto thisEnd = _support.empty() ? 0 : _support.getEndIndex() - 1;
+            const auto aStart = a.getSupport().empty() ? 0 : a.getSupport().getStartIndex();
+            const auto aEnd = a.getSupport().empty() ? 0 : a.getSupport().getEndIndex() - 1;
+
             for (size_t i = 0; i < nintervals; i++) {
                 const auto absIndex = newSupport.absoluteFromRelative(i);
-                const auto thisRelIndex = _support.intervalIndexFromAbsolute(absIndex);
-                const auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(absIndex);
 
-                if (thisRelIndex && !aRelIndex) {
+                // PERFORMANCE OPTIMIZATION:
+                // Replaced expensive 'intervalIndexFromAbsolute(absIndex)' optional return
+                // and binary search with precomputed array boundaries and constant-time math.
+                const bool hasThis = (!_support.empty() && absIndex >= thisStart && absIndex <= thisEnd);
+                const bool hasA = (!a.getSupport().empty() && absIndex >= aStart && absIndex <= aEnd);
+
+                if (hasThis && !hasA) {
                     ncoefficients[i] =
                             internal::changearraysize<T, order + 1, NEW_ARRAY_SIZE>(
-                                    _coefficients[*thisRelIndex]);
-                } else if (aRelIndex && !thisRelIndex) {
+                                    _coefficients[absIndex - thisStart]);
+                } else if (hasA && !hasThis) {
                     ncoefficients[i] =
                             internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(
-                                    a.getCoefficients()[*aRelIndex]);
-                } else if (thisRelIndex && aRelIndex) {
+                                    a.getCoefficients()[absIndex - aStart]);
+                } else if (hasThis && hasA) {
                     ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
-                            a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]);
+                            a.getCoefficients()[absIndex - aStart], _coefficients[absIndex - thisStart]);
                 } else {
                     ncoefficients[i] =
                             internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
@@ -629,13 +645,11 @@ namespace bspline {
             const auto &spline = *splineIt;
             const T coeff = *coeffIt;
 
-            for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
-                // Index of the interval relative to the global grid.
-                const size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
+            const size_t splineStart = spline.getSupport().empty() ? 0 : spline.getSupport().getStartIndex();
+            const size_t newSupportStart = newSupport.empty() ? 0 : newSupport.getStartIndex();
 
-                // Index of the interval relative to the newSupport.
-                const size_t newSupportIndex =
-                        newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
+            for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
+                const size_t newSupportIndex = splineStart + j - newSupportStart;
 
                 const std::array<T, order + 1> &splineCoeffs =
                         spline.getCoefficients().at(j);

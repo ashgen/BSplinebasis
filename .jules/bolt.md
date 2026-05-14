@@ -1,0 +1,3 @@
+## 2024-05-14 - Direct Math Instead of std::optional Searches
+**Learning:** In the `Spline` class, `operator*`, `operator+`, and `linearCombination` heavily loop over overlapping Support intervals. Utilizing `_support.intervalIndexFromAbsolute(absIndex)` inside these tight loops causes a major performance bottleneck due to unnecessary binary searches and `std::optional` unwrapping.
+**Action:** Since intervals are guaranteed contiguous within their intersection or bounds, always replace search-based lookups with direct, constant-time `O(1)` index arithmetic (e.g. `absIndex - thisStart`) while caching boundaries before entering the loop. Ensure boundaries are checked against `.empty()` to prevent `size_t` underflow.

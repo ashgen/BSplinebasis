@@ -8,3 +8,11 @@
 **/html/**
 .project
 .metadata/**
+eigen-3.4.0/
+build/
+test_perf*
+patch_*
+run_tests.sh
+fix_script*.py
+install_deps.sh
+fix_test_env.sh
