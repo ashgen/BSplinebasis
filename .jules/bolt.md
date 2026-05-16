@@ -1,0 +1,3 @@
+## 2024-05-19 - C++ micro-optimizations in B-Spline integration routines
+**Learning:** In C++ library development, hot loops for evaluating polynomial intervals can suffer significantly from bound-checking overheads (e.g., `std::optional::value()` unwrapping or `std::array::at()`) even when mathematical constraints guarantee safety. Template-heavy math routines like binomial coefficients evaluate at runtime if not strictly marked `constexpr`.
+**Action:** When working on numerical integration or hot loops, statically analyze index bounds to safely replace `.at()` with `[]` and bypass `std::optional` checks using relative offsets. Mark pure math helper functions as `constexpr` to allow compile-time evaluation during template instantiation.

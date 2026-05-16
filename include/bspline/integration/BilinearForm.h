@@ -119,10 +119,13 @@ namespace bspline::integration {
             for (size_t interv = 0; interv < nintervals; interv++) {
                 const auto absIndex = integrandSupport.absoluteFromRelative(interv);
 
-                const auto aIndex =
-                        a.getSupport().intervalIndexFromAbsolute(absIndex).value();
-                const auto bIndex =
-                        b.getSupport().intervalIndexFromAbsolute(absIndex).value();
+                // Optimization: absIndex is guaranteed to be within both a and b supports
+                // because integrandSupport is the intersection of their supports.
+                // We directly calculate the relative indices instead of using
+                // intervalIndexFromAbsolute(...).value(), which avoids bounds checking
+                // and std::optional overhead.
+                const auto aIndex = absIndex - a.getSupport().getStartIndex();
+                const auto bIndex = absIndex - b.getSupport().getStartIndex();
 
                 const T dxhalf = (a.getSupport()[aIndex + 1] - a.getSupport()[aIndex]) /
                                  static_cast<T>(2);
