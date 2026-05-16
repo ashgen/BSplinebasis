@@ -8,3 +8,8 @@
 **/html/**
 .project
 .metadata/**
+output.txt
+bench_eval*
+bench_gen*
+test_opt*
+build/

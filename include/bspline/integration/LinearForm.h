@@ -43,7 +43,10 @@ namespace bspline::integration {
                     static_cast<int>(size) - static_cast<int>(size % 2 == 0 ? 2 : 1);
             static_assert(endIndex >= 0);
 
-            T result = a.at(endIndex) / static_cast<T>(endIndex + 1);
+            // Optimization: Replaced a.at() with a[] since the index is known
+            // to be valid at compile-time (via static_assert) and from the loop
+            // conditions. This removes bounds checking overhead in a hot loop.
+            T result = a[endIndex] / static_cast<T>(endIndex + 1);
             const T dxhalf_squared = dxhalf * dxhalf;
 
             for (int i = endIndex - 2; i >= 0; i -= 2) {
