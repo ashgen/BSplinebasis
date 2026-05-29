@@ -1,0 +1,3 @@
+## 2024-05-24 - Precomputing Binomial Coefficients
+**Learning:** In highly mathematical template libraries, values that depend solely on template parameters (like binomial coefficients for a given degree `n`) can become major runtime bottlenecks if re-evaluated constantly inside inner loops (like matrix element calculations).
+**Action:** Always look for opportunities to memoize or evaluate such values at compile-time or initialization time. Using `static const auto array = [](){ ... }();` inside a template function is a robust way to guarantee one-time initialization (magic statics) without forcing strict `constexpr` requirements on the underlying numeric types (which might not be literal types in generic math libraries).

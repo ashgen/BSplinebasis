@@ -35,9 +35,18 @@ namespace bspline::operators {
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
             std::array<T, n + 1> retVal;
+
+            static const auto binom_coeffs = []() {
+                std::array<T, n + 1> arr{};
+                for (size_t i = 0; i < n + 1; i++) {
+                    arr[n - i] = internal::binomialCoefficient<T>(n, i);
+                }
+                return arr;
+            }();
+
             T power_of_xm = static_cast<T>(1);
             for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                retVal[n - i] = binom_coeffs[n - i] * power_of_xm;
                 power_of_xm *= xm;
             }
             return retVal;
