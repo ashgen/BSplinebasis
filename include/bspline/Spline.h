@@ -629,17 +629,14 @@ namespace bspline {
             const auto &spline = *splineIt;
             const T coeff = *coeffIt;
 
-            for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
-                // Index of the interval relative to the global grid.
-                const size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
+            // Offset of the current spline support relative to the new support
+            const size_t offset = spline.getSupport().getStartIndex() - newSupport.getStartIndex();
+            const size_t numIntervals = spline.getSupport().numberOfIntervals();
+            const auto& splineCoefficients = spline.getCoefficients();
 
-                // Index of the interval relative to the newSupport.
-                const size_t newSupportIndex =
-                        newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
-
-                const std::array<T, order + 1> &splineCoeffs =
-                        spline.getCoefficients().at(j);
-                std::array<T, order + 1> &newCoeffs = newCoefficients.at(newSupportIndex);
+            for (size_t j = 0; j < numIntervals; j++) {
+                const std::array<T, order + 1> &splineCoeffs = splineCoefficients[j];
+                std::array<T, order + 1> &newCoeffs = newCoefficients[offset + j];
 
                 for (size_t k = 0; k < order + 1; k++) {
                     newCoeffs[k] += coeff * splineCoeffs[k];
