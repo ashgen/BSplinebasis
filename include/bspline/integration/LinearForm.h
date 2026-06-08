@@ -79,15 +79,19 @@ namespace bspline::integration {
 
             T result = static_cast<T>(0);
 
-            for (size_t i = 0; i < nintervals; i++) {
-                const size_t absIndex = a.getSupport().absoluteFromRelative(i);
-                const T dxhalf =
-                        (a.getSupport()[i + 1] - a.getSupport()[i]) / static_cast<T>(2);
+            if (nintervals > 0) {
+                const size_t firstAbsIndex = a.getSupport().absoluteFromRelative(0);
+                const auto& grid = a.getSupport().getGrid();
+                for (size_t i = 0; i < nintervals; i++) {
+                    const size_t absIndex = firstAbsIndex + i;
+                    const T dxhalf =
+                            (grid[absIndex + 1] - grid[absIndex]) / static_cast<T>(2);
 
-                result +=
-                        evaluateInterval(_o.transform(a.getCoefficients()[i],
-                                                      a.getSupport().getGrid(), absIndex),
-                                         dxhalf);
+                    result +=
+                            evaluateInterval(_o.transform(a.getCoefficients()[i],
+                                                          grid, absIndex),
+                                             dxhalf);
+                }
             }
             return result;
         }

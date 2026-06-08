@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimization in BilinearForm and LinearForm evaluate methods
+**Learning:** Calling `std::optional::value()` inside hot loops like numerical integration of splines can cause a measurable performance overhead due to its built-in bounds checking and potential exceptions.
+**Action:** Lift the calculation of starting indices out of the loop and use linear increments or use the dereference operator `*` if we are absolutely certain the value is present. We opted to calculate the first relative index using `intervalIndexFromAbsolute` with `*` and incrementing the result linearly in the loop for the highest performance gain.
