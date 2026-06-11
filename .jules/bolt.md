@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimization] Compile-time binomial coefficients in Position::expandPower
+**Learning:** Replacing runtime computation of binomial coefficients with `constexpr` std::array evaluations using `std::index_sequence` results in a ~30x performance improvement when generating polynomials. Also evaluating as `size_t` statically and casting to template param `T` at runtime avoids requiring non-literal template arguments to support `constexpr`.
+**Action:** When constant expressions are used in loops, move computation to compile-time wherever possible using `constexpr` and `std::index_sequence` in C++, but be careful about type constraints of template arguments.
