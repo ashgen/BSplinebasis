@@ -10,6 +10,7 @@
 
 #include <bspline/internal/misc.h>
 #include <bspline/operators/GenericOperators.h>
+#include <utility> // for std::index_sequence and std::make_index_sequence
 
 /*!
  * Operator definitions.
@@ -32,12 +33,18 @@ namespace bspline::operators {
    * @tparam T The datatype of xm and the returned coefficients.
    * @returns The polynomial coefficients.
    */
+        template<std::size_t... Is>
+        static constexpr std::array<size_t, n + 1> getBinomialCoefficients(std::index_sequence<Is...>) {
+            return {internal::binomialCoefficient<size_t>(n, Is)...};
+        }
+
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
+            static constexpr auto bcs = getBinomialCoefficients(std::make_index_sequence<n + 1>{});
             std::array<T, n + 1> retVal;
             T power_of_xm = static_cast<T>(1);
             for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                retVal[n - i] = static_cast<T>(bcs[i]) * power_of_xm;
                 power_of_xm *= xm;
             }
             return retVal;
