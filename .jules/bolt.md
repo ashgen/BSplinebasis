@@ -1,0 +1,3 @@
+## 2024-06-16 - [std::optional overhead in hot loops]
+**Learning:** Extracting an std::optional value using `.value()` inside deeply nested loops can have significant overhead. In the case of `BilinearForm::evaluate`, removing `intervalIndexFromAbsolute(absIndex).value()` and replacing it with a direct start index offset subtraction improved execution times by 13-15% because it avoided the creation and checking of `std::optional`.
+**Action:** When working with math-heavy library routines iterating over bounds that are guaranteed to be valid (such as finding the intersection of two supports), calculate relative indices directly rather than invoking safe accessor methods that return `std::optional`.
