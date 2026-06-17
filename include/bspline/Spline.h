@@ -75,6 +75,18 @@ namespace bspline {
             if (_support.size() < 2 || x > _support.back() || x < _support.front())
                 return std::nullopt;// x is not part of the spline's support
 
+            // Optimization: Linear search is usually faster for small arrays due to branch prediction
+            // and cache locality. 64 elements is a good threshold for this.
+            if (_support.size() <= 64) {
+                // We already checked x < _support.front() above, so x >= _support[0] is true.
+                // We just need to find the first element that is >= x.
+                for (size_t i = 1; i < _support.size(); ++i) {
+                    if (x <= _support[i]) {
+                        return i - 1;
+                    }
+                }
+            }
+
             const auto begin = _support.begin();
             const auto it = std::lower_bound(begin, _support.end(), x);
 
