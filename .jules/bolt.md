@@ -1,0 +1,3 @@
+## 2024-06-18 - [Fast Path Evaluation of BSplines Bilinear Form]
+**Learning:** Found a significant O(N^2) evaluation loop bottleneck when computing matrix elements via `BilinearForm::evaluate` in B-splines. Because B-splines have compact support, most pairs evaluated do not overlap. However, the original code instantiated an intersection `Support` object and set up a numerical integration loop for every pair regardless, triggering unnecessary memory allocations and grid comparisons.
+**Action:** Always implement quick `hasOverlap()` early returns in matrix element integrals for basis functions with compact local support before allocating intersection spaces.
