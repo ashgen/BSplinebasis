@@ -8,9 +8,11 @@ if (Eigen3_FOUND)
             diffusion.cpp
     )
 
+    # ⚡ Bolt: removed BSPLINE_ADD_TEST_CHECKS definition from examples.
+    # Evaluating test-only runtime checks via DURING_TEST_CHECK_VALIDITY macro
+    # severely degraded hot mathematical loops, e.g. reducing harmonic oscillator runtime ~10x
     target_compile_definitions(examples_objects PUBLIC
             BSPLINE_INTERPOLATION_USE_EIGEN
-            BSPLINE_ADD_TEST_CHECKS
     )
 
     target_link_libraries(examples_objects PUBLIC
