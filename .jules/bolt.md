@@ -1,0 +1,3 @@
+## 2024-06-25 - [BilinearForm Overlap Short-circuit]
+**Learning:** The evaluation of `BilinearForm` and `integrate` numerical function in the library performs calculations over pairs of splines without checking if they actually overlap. When building matrices (which often iterates over all pairs of splines), this creates an implicit O(N^2) behavior, even though splines have compact support and only overlap with a small constant number of neighbors.
+**Action:** Always check `hasOverlap` on the spline support before calculating their intersection and proceeding with matrix element evaluation or numerical integration.

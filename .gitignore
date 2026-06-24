@@ -8,3 +8,7 @@
 **/html/**
 .project
 .metadata/**
+benchmark*
+evaluate_test*
+test_overlap*
+build/
