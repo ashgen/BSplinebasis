@@ -75,6 +75,11 @@ namespace bspline::integration {
    */
         template<typename T, size_t order>
         T evaluate(const Spline<T, order> &a) const {
+            // Early exit condition if there is no overlap
+            if (a.getSupport().getStartIndex() >= a.getSupport().getEndIndex()) {
+                return static_cast<T>(0);
+            }
+
             const size_t nintervals = a.getSupport().numberOfIntervals();
 
             T result = static_cast<T>(0);
