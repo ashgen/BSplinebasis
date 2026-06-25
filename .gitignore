@@ -8,3 +8,8 @@
 **/html/**
 .project
 .metadata/**
+build/
+benchmark*
+patch*
+test_perf*
+perf_test*

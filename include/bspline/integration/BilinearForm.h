@@ -110,6 +110,12 @@ namespace bspline::integration {
             // Will also check whether the two grids are equivalent.
             const support::Support integrandSupport =
                     a.getSupport().calcIntersection(b.getSupport());
+
+            // Early exit condition if there is no overlap
+            if (integrandSupport.getStartIndex() >= integrandSupport.getEndIndex()) {
+                return static_cast<T>(0);
+            }
+
             const size_t nintervals = integrandSupport.numberOfIntervals();
 
             const auto &grid = integrandSupport.getGrid();

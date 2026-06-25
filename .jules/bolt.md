@@ -1,0 +1,3 @@
+## 2024-06-25 - Avoid zero evaluation for non-overlapping splines
+**Learning:** In a typical B-spline basis code, overlapping splines evaluate integrals. A significant portion of time is wasted trying to evaluate properties (like intersection limits or integrals) where the splines do not overlap or there's nothing to compute (the intersection is empty). When evaluating matrix elements where splines don't overlap, evaluating intervals leads to zero anyways but takes computation time.
+**Action:** When computing integrals over supports (like `BilinearForm` or `LinearForm`), immediately return 0 if the intersection of supports is empty. This early return prevents entering loops and function calls that eventually compute 0 anyway.
