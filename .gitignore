@@ -8,3 +8,7 @@
 **/html/**
 .project
 .metadata/**
+build/
+callgrind.out.*
+run_perf.sh
+plan.md

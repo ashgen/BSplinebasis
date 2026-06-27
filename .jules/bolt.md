@@ -1,0 +1,3 @@
+## 2024-06-27 - Remove testing overhead from production code
+**Learning:** The C++ macro `DURING_TEST_CHECK_VALIDITY` injected runtime validity checks in every single call to Spline, Grid, and Support methods. These macros were being compiled into the example binaries because `examples/CMakeLists.txt` accidentally defined `BSPLINE_ADD_TEST_CHECKS`. For the `harmonic_oscillator` example, this validation code was executing millions of times per second and accounting for over 70% of execution time.
+**Action:** When working on C++ code, be extremely wary of test-only macros or defensive checks leaking into Release builds. A simple check using a profiler like `perf` or `callgrind` can easily point out this type of defensive programming overhead.
