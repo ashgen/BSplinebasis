@@ -1,0 +1,3 @@
+## 2024-05-18 - Severe runtime overhead of BSPLINE_ADD_TEST_CHECKS
+**Learning:** The `BSPLINE_ADD_TEST_CHECKS` macro in `bsplinebasis` introduces severe runtime overhead by executing validity checks. It should be strictly limited to test targets and never used in production or example builds.
+**Action:** When working on this codebase or similarly structured C++ codebases with extensive macros, verify that test-specific validation macros are not inadvertently included in non-test compilation targets. This check improves example binary runtime from ~0.650s to ~0.035s.
