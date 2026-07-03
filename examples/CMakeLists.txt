@@ -10,7 +10,8 @@ if (Eigen3_FOUND)
 
     target_compile_definitions(examples_objects PUBLIC
             BSPLINE_INTERPOLATION_USE_EIGEN
-            BSPLINE_ADD_TEST_CHECKS
+            # Removed BSPLINE_ADD_TEST_CHECKS to prevent severe runtime overhead in examples.
+
     )
 
     target_link_libraries(examples_objects PUBLIC
