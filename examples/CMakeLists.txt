@@ -8,9 +8,10 @@ if (Eigen3_FOUND)
             diffusion.cpp
     )
 
+    # Removed BSPLINE_ADD_TEST_CHECKS macro here to prevent severe
+    # runtime overhead when running example binaries.
     target_compile_definitions(examples_objects PUBLIC
             BSPLINE_INTERPOLATION_USE_EIGEN
-            BSPLINE_ADD_TEST_CHECKS
     )
 
     target_link_libraries(examples_objects PUBLIC
