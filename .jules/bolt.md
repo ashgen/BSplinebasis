@@ -1,0 +1,3 @@
+## 2024-05-18 - [Remove BSPLINE_ADD_TEST_CHECKS from production/example targets]
+**Learning:** The `BSPLINE_ADD_TEST_CHECKS` macro introduces severe runtime overhead by executing validity checks and should strictly be limited to test targets. In this codebase, it caused a 13x slowdown for example execution (0.454s down to 0.034s for `harmonic_oscillator` when removed).
+**Action:** When working with CMake build systems in this codebase, ensure `BSPLINE_ADD_TEST_CHECKS` is only added to test targets (`tests/CMakeLists.txt`) and never to example or production library code.
