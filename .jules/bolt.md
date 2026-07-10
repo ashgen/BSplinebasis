@@ -1,0 +1,3 @@
+## 2024-07-10 - Remove BSPLINE_ADD_TEST_CHECKS from production builds
+**Learning:** The `BSPLINE_ADD_TEST_CHECKS` macro introduces severe runtime overhead by executing validity checks and should strictly be limited to test targets. Enabling this on example or production builds drastically slows down execution.
+**Action:** Ensure `BSPLINE_ADD_TEST_CHECKS` is only present in `tests/CMakeLists.txt` and NEVER in `examples/CMakeLists.txt` or the main library build files.
