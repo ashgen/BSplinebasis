@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wextra -pedantic -Werror -O3 -DNDEBUG -O3 CMakeFiles/examples.dir/main.cpp.o "CMakeFiles/examples_objects.dir/harmonic-oscillator.cpp.o" "CMakeFiles/examples_objects.dir/spline-potential.cpp.o" CMakeFiles/examples_objects.dir/hydrogen.cpp.o CMakeFiles/examples_objects.dir/diffusion.cpp.o -o examples
