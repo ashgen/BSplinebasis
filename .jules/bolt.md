@@ -1,0 +1,3 @@
+## 2024-07-25 - Avoid array fills in tight integration loops
+**Learning:** In `bspline::integration::BilinearForm::evaluateInterval`, there is an unnecessary explicit `.fill(static_cast<T>(0))` operation. Array elements can be zero-initialized directly during declaration `std::array<T, (sizea + sizeb) / 2> coefficients{};`. This removes an unnecessary loop and branching over memory that the compiler might not optimize away, executing millions of times during analytical evaluation of the forms.
+**Action:** Always prefer value-initialization (`{}`) for `std::array` when a zero-filled array is required, rather than an explicit `.fill()` method call, as it allows the compiler to optimally zero memory without emitting loops or explicitly setting elements.
