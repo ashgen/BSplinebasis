@@ -1,0 +1,3 @@
+## 2024-05-24 - Prefer Value-Initialization over Zero-Filling
+**Learning:** In C++, prefer value-initialization for arrays (e.g., `std::array<T, N> arr{};`) over explicit zero-filling (e.g., `arr.fill(0)`). However, avoid value-initialization when it introduces redundant writes (pessimization), such as when default-initializing an array that will be immediately and completely overwritten (e.g., in array resizing or copying operations).
+**Action:** Use value initialization `std::array<T, N> arr{};` where elements need zero initialization, but use default initialization `std::array<T, N> arr;` when all elements will be unconditionally populated right after.
