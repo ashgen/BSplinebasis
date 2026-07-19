@@ -1,0 +1,3 @@
+## 2024-05-24 - Early Return for Non-Intersecting Splines in BilinearForm
+**Learning:** Checking for overlap (`std::max(start1, start2) < std::min(end1, end2)`) before performing a full intersection calculation on compact supports (like B-Splines) avoids significant overhead. Specifically, `calcIntersection` throws an exception if the grids differ, making it an expensive check when a fast false check is sufficient.
+**Action:** In operations involving pairs of compact-support objects, prefer adding a fast `hasIntersection()` or `overlaps()` boolean check before evaluating heavy intersection logic.
