@@ -51,8 +51,7 @@ namespace bspline::integration {
         template<typename T, size_t sizea, size_t sizeb>
         static T evaluateInterval(const std::array<T, sizea> &a,
                                   const std::array<T, sizeb> &b, const T &dxhalf) {
-            std::array<T, (sizea + sizeb) / 2> coefficients;
-            coefficients.fill(static_cast<T>(0));
+            std::array<T, (sizea + sizeb) / 2> coefficients{}; // Bolt: value-init to avoid runtime fill overhead
             for (size_t i = 0; i < sizea; i++) {
                 for (size_t j = i % 2; j < sizeb; j += 2) {
                     coefficients[(i + j) / 2] += a[i] * b[j];

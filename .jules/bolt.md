@@ -1,0 +1,3 @@
+## 2026-07-21 - std::array Value-Initialization vs explicit .fill(0)
+**Learning:** In C++, `std::array` zero-initialization via `.fill(0)` introduces unnecessary runtime overhead because the array elements are first uninitialized and then explicitly overwritten with zeroes inside a loop. Value-initialization with `{}` guarantees zero-initialization at compile-time/allocation-time if possible or a more optimized zeroing at runtime.
+**Action:** Use value-initialization (e.g., `std::array<T, N> arr{};`) for `std::array` instead of explicit zero-filling (e.g., `arr.fill(0)`) when initializing to zero.
