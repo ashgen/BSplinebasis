@@ -8,3 +8,13 @@
 **/html/**
 .project
 .metadata/**
+build/
+benchmark
+benchmark2
+benchmark3
+test_perf.sh
+benchmark4
+benchmark5
+benchmark_zero_init
+benchmark_misc
+benchmark_misc2
