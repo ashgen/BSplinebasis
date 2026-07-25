@@ -1,0 +1,3 @@
+## 2024-07-25 - Redundant explicit zero-filling in vector initialization
+**Learning:** The codebase used a custom `internal::make_array(0)` to explicitly fill arrays with zeros and passed them to `std::vector` constructors (e.g., `std::vector<std::array<T, N>>(size, make_array(0))`). This creates an array, calls `.fill(0)`, and then copies it `size` times. C++ `std::vector(size)` already performs value-initialization, which zero-initializes `std::array` automatically without the explicit copy or fill overhead.
+**Action:** Rely on `std::vector`'s default value-initialization for element arrays instead of explicit zero-filling and copying, and prefer `std::array<T, N>{}` for single instances to allow optimal compiler initialization.
