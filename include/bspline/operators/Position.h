@@ -78,8 +78,8 @@ namespace bspline::operators {
 
             const std::array<T, n + 1> expanded = expandPower<T>(xm);
 
-            std::array<T, OUTPUT_SIZE> retVal;
-            retVal.fill(static_cast<T>(0));
+            // Bolt: Replaced std::array.fill(0) with value-initialization to avoid double-initialization overhead.
+            std::array<T, OUTPUT_SIZE> retVal{};
 
             for (size_t i = 0; i < input.size(); i++) {
                 for (size_t j = 0; j < expanded.size(); j++) {
