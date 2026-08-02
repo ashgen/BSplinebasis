@@ -337,13 +337,17 @@ namespace bspline {
                     "The assignment operator is only defined if the order of the rhs "
                     "spline is lower than or equal to that of the lhs spline.");
 
-            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(
-                    a.getCoefficients().size(),
-                    internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
+            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients;
+            // Optimization: use reserve and push_back with uninitialized local arrays
+            // rather than vector(N, default_val) to prevent redundant zero-writes
+            // overhead before elements are overwritten.
+            ncoefficients.reserve(a.getCoefficients().size());
             for (size_t i = 0; i < a.getCoefficients().size(); i++) {
                 const auto &coeffsi = a.getCoefficients()[i];
-                auto &ncoeffsi = ncoefficients[i];
+                std::array<T, ARRAY_SIZE> ncoeffsi;
                 for (size_t j = 0; j < coeffsi.size(); j++) ncoeffsi[j] = coeffsi[j];
+                for (size_t j = coeffsi.size(); j < ARRAY_SIZE; j++) ncoeffsi[j] = static_cast<T>(0);
+                ncoefficients.push_back(ncoeffsi);
             }
             setData(a.getSupport(), std::move(ncoefficients));
             return *this;
