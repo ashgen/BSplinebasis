@@ -407,7 +407,8 @@ s.
 
 solve();
 
-std::vector<std::array<T, NUM_COEFFS>> coeffs((x.size() - 1));
+std::vector<std::array<T, NUM_COEFFS>> coeffs;
+coeffs.reserve(x.size() - 1);
 for (
 size_t i = 0;
 i + 1 < x.
@@ -415,14 +416,16 @@ i + 1 < x.
 size();
 
 i++) {
-std::array<T, NUM_COEFFS> &coeffsi = coeffs[i];
+std::array<T, NUM_COEFFS> coeffsi;
 for (
 size_t j = 0;
 j<NUM_COEFFS;
-j++)
+j++) {
 coeffsi[j] = s.
 x(NUM_COEFFS
 * i + j);
+}
+coeffs.push_back(coeffsi);
 }
 return
 bspline::Spline<T, order>(std::move(x), std::move(coeffs)
