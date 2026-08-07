@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimize array initializations in Spline.h]
+**Learning:** [Avoid value-initialization when it introduces redundant writes (e.g., default-initializing a `std::vector<std::array>` that will be completely overwritten). To optimize, use `reserve()` and `push_back()` with uninitialized local arrays (`std::array<T, N> arr;`), but strictly ensure every element is overwritten before use to prevent Undefined Behavior with fundamental types.]
+**Action:** [When working with C++, always look out for default-initialization of sizable containers that will subsequently be overwritten, and use `reserve()` and `push_back()` instead.]
