@@ -1,0 +1,3 @@
+## 2024-05-01 - [Avoid redundant initialization of std::vector<std::array>]
+**Learning:** In C++, value-initializing a vector of arrays (`std::vector<std::array<T, N>> vec(size);` or using `internal::make_array`) forces an expensive zero-fill of every element. If the elements will be immediately overwritten (e.g. in a loop or through math operations), this zero-filling is a redundant performance bottleneck.
+**Action:** Instead of value initialization, use `std::vector::reserve(size)` and `push_back(uninitialized_array)` when the array values will be strictly overwritten, OR use default-initialization for `std::array` inside the loop and ensure every element is initialized before use to prevent UB.
