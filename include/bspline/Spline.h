@@ -371,8 +371,8 @@ namespace bspline {
             if (nintervals == 0)
                 return Spline<T, NEW_ORDER>(std::move(newSupport), {});// No overlap
 
-            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
-                    nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients;
+            newCoefficients.reserve(nintervals);
 
             for (size_t i = 0; i < nintervals; i++) {
                 const auto ai = newSupport.absoluteFromRelative(i);
@@ -382,13 +382,15 @@ namespace bspline {
 
                 const auto &thiscoeffs = _coefficients[thisRelIndex];
                 const auto &acoeffs = a.getCoefficients()[aRelIndex];
-                auto &coeffsi = newCoefficients[i];
+                std::array<T, NEW_ARRAY_SIZE> coeffsi;
+                coeffsi.fill(static_cast<T>(0));
 
                 for (size_t j = 0; j < order + 1; j++) {
                     for (size_t k = 0; k < ordera + 1; k++) {
                         coeffsi[j + k] += thiscoeffs[j] * acoeffs[k];
                     }
                 }
+                newCoefficients.push_back(coeffsi);
             }
             return Spline<T, NEW_ORDER>(std::move(newSupport),
                                         std::move(newCoefficients));
@@ -413,7 +415,8 @@ namespace bspline {
             Support newSupport = _support.calcUnion(a.getSupport());
             const size_t nintervals = newSupport.numberOfIntervals();
 
-            std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients(nintervals);
+            std::vector<std::array<T, NEW_ARRAY_SIZE>> ncoefficients;
+            ncoefficients.reserve(nintervals);
 
             for (size_t i = 0; i < nintervals; i++) {
                 const auto absIndex = newSupport.absoluteFromRelative(i);
@@ -421,19 +424,19 @@ namespace bspline {
                 const auto aRelIndex = a.getSupport().intervalIndexFromAbsolute(absIndex);
 
                 if (thisRelIndex && !aRelIndex) {
-                    ncoefficients[i] =
+                    ncoefficients.push_back(
                             internal::changearraysize<T, order + 1, NEW_ARRAY_SIZE>(
-                                    _coefficients[*thisRelIndex]);
+                                    _coefficients[*thisRelIndex]));
                 } else if (aRelIndex && !thisRelIndex) {
-                    ncoefficients[i] =
+                    ncoefficients.push_back(
                             internal::changearraysize<T, ordera + 1, NEW_ARRAY_SIZE>(
-                                    a.getCoefficients()[*aRelIndex]);
+                                    a.getCoefficients()[*aRelIndex]));
                 } else if (thisRelIndex && aRelIndex) {
-                    ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
-                            a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]);
+                    ncoefficients.push_back(internal::add<T, ordera + 1, order + 1>(
+                            a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]));
                 } else {
-                    ncoefficients[i] =
-                            internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
+                    ncoefficients.push_back(
+                            internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
                 }
             }
             return Spline<T, NEW_ORDER>(std::move(newSupport),
@@ -618,9 +621,13 @@ namespace bspline {
         // Set up support and coefficients vector for the returned spline.
         Support newSupport(support0.getGrid(), startIndex.value_or(0),
                            endIndex.value_or(0));
-        std::vector<std::array<T, order + 1>> newCoefficients(
-                newSupport.numberOfIntervals(),
-                internal::make_array<T, order + 1>(static_cast<T>(0)));
+        std::vector<std::array<T, order + 1>> newCoefficients;
+        newCoefficients.reserve(newSupport.numberOfIntervals());
+        for (size_t i = 0; i < newSupport.numberOfIntervals(); i++) {
+            std::array<T, order + 1> coeffsi;
+            coeffsi.fill(static_cast<T>(0));
+            newCoefficients.push_back(coeffsi);
+        }
 
         auto coeffIt = coeffsBegin;
         auto splineIt = splinesBegin;
