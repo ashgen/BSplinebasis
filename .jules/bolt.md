@@ -1,0 +1,3 @@
+## 2024-08-15 - Vector Value-Initialization of std::array
+**Learning:** Using `make_array<T, size>(val)` to fill a `std::vector` of `std::array` via the constructor (e.g., `std::vector<std::array<double, 20>>(size, make_array(...))`) is noticeably slower than relying on standard value-initialization (`std::vector<std::array<double, 20>>(size)`). This is because value-initialization utilizes `std::uninitialized_value_construct` which the compiler can optimize better (e.g., memset/vectorization) compared to repeatedly copying a zero-filled element.
+**Action:** Use simple value-initialization like `std::vector<std::array<T, N>>(size)` for zeroing out vectors of arrays instead of explicitly copying a zero-filled element.

@@ -8,3 +8,11 @@
 **/html/**
 .project
 .metadata/**
+build/
+a.out
+test_init.cpp
+test_perf.cpp
+test_perf_2.cpp
+test_perf_3.cpp
+test_perf_4.cpp
+test_perf_5.cpp
