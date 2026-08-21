@@ -8,3 +8,11 @@
 **/html/**
 .project
 .metadata/**
+build/
+bench
+bench2
+bench3
+bench4
+bench5
+bench6
+bench7
