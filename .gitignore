@@ -8,3 +8,7 @@
 **/html/**
 .project
 .metadata/**
+build/
+benchmark*
+test*
+.jules/
