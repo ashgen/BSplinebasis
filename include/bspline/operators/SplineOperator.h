@@ -73,7 +73,8 @@ namespace bspline::operators {
             const auto relativeIndex =
                     _s.getSupport().relativeFromAbsolute(intervalIndex);
 
-            auto retVal = internal::make_array<T, OUTPUT_SIZE>(static_cast<T>(0));
+            // Optimization: Use value initialization {} over explicit make_array(0)
+            std::array<T, OUTPUT_SIZE> retVal{};
 
             if (relativeIndex) {
                 // The interval is part of the Spline's support.

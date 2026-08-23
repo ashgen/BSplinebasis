@@ -1,0 +1,3 @@
+## 2024-08-23 - [C++ Array Value-Initialization Optimization]
+**Learning:** Initializing std::array vectors with explicit zero-filling via custom make_array constructs and copy assignments is surprisingly slow compared to using standard value-initialization (e.g. `std::vector<std::array<T, N>>(size)` or `std::array<T, N>{}`). C++ naturally zeroes memory continuously via value-initialization much faster than explicit copying element-by-element.
+**Action:** When filling or initializing arrays/vectors of arrays with zeroes in C++, rely on value initialization (`std::array<T, N>{}`) and std::vector size constructors rather than custom initialization functions that fill and copy explicitly.
