@@ -8,3 +8,8 @@
 **/html/**
 .project
 .metadata/**
+build/
+a.out
+test_init.cpp
+test_init2.cpp
+test_opt.cpp
