@@ -1,0 +1,3 @@
+## 2024-08-26 - [Array Value-Initialization for Vectors of Arrays]
+**Learning:** In C++, constructing a vector of `std::array` types natively zero-initializes the elements continuously in memory (e.g., `std::vector<std::array<T, N>>(size)`). Attempting to explicitly provide a zero-initialized array (like using `make_array<T, N>(0)`) incurs significant overhead by instantiating intermediate arrays and performing deep copies.
+**Action:** Always prefer empty-constructor initialization (value-initialization) for `std::array` and vectors of `std::array` to let the compiler naturally zero-fill the memory, avoiding unnecessary allocation and copies.
