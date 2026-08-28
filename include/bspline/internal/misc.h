@@ -18,21 +18,6 @@
 namespace bspline::internal {
 
     /*!
- * Creates an std::array<T, size> with all values set to val.
- *
- * @param val Value to initialise the members of the array with.
- * @tparam T Datatype of the array.
- * @tparam size Size of the array.
- * @returns An array filled with the value val.
- */
-    template<typename T, size_t size>
-    std::array<T, size> make_array(T val) {
-        std::array<T, size> ret;
-        ret.fill(val);
-        return ret;
-    }
-
-    /*!
  * Adds two vectors, taking into account that one vector might be longer than
  * the other one.
  *
