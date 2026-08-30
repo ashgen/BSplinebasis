@@ -338,8 +338,7 @@ namespace bspline {
                     "spline is lower than or equal to that of the lhs spline.");
 
             std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(
-                    a.getCoefficients().size(),
-                    internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
+                    a.getCoefficients().size()); // ⚡ Bolt: Native zero-initialization is faster than copying a prototype array
             for (size_t i = 0; i < a.getCoefficients().size(); i++) {
                 const auto &coeffsi = a.getCoefficients()[i];
                 auto &ncoeffsi = ncoefficients[i];
@@ -372,7 +371,7 @@ namespace bspline {
                 return Spline<T, NEW_ORDER>(std::move(newSupport), {});// No overlap
 
             std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
-                    nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+                    nintervals); // ⚡ Bolt: Native zero-initialization
 
             for (size_t i = 0; i < nintervals; i++) {
                 const auto ai = newSupport.absoluteFromRelative(i);
@@ -432,8 +431,7 @@ namespace bspline {
                     ncoefficients[i] = internal::add<T, ordera + 1, order + 1>(
                             a.getCoefficients()[*aRelIndex], _coefficients[*thisRelIndex]);
                 } else {
-                    ncoefficients[i] =
-                            internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0));
+                    ncoefficients[i] = {}; // ⚡ Bolt: Value-initialization is faster than make_array
                 }
             }
             return Spline<T, NEW_ORDER>(std::move(newSupport),
@@ -619,8 +617,7 @@ namespace bspline {
         Support newSupport(support0.getGrid(), startIndex.value_or(0),
                            endIndex.value_or(0));
         std::vector<std::array<T, order + 1>> newCoefficients(
-                newSupport.numberOfIntervals(),
-                internal::make_array<T, order + 1>(static_cast<T>(0)));
+                newSupport.numberOfIntervals()); // ⚡ Bolt: Native value-initialization
 
         auto coeffIt = coeffsBegin;
         auto splineIt = splinesBegin;
