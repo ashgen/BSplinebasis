@@ -8,3 +8,7 @@
 **/html/**
 .project
 .metadata/**
+build/
+test_speed*
+test_init*
+test_arr*
