@@ -74,9 +74,9 @@ namespace bspline::internal {
         if constexpr (sizeout == sizein)
             return in;
         else {
-            std::array<T, sizeout> ret;
+            // Value-initialization zeroes out all elements natively
+            std::array<T, sizeout> ret{};
             for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
-            for (size_t i = sizein; i < sizeout; i++) ret[i] = static_cast<T>(0);
             return ret;
         }
     }
