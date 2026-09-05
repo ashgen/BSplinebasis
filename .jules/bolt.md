@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimize Array Value-Initialization]
+**Learning:** Explicitly filling an array with a value using a prototype element (e.g. `make_array(0)`) is significantly slower than using native value-initialization (`std::array<T, N> arr{};`). When working with vectors of arrays, relying on `std::vector`'s native default initialization scales far better than copying constructed prototypes.
+**Action:** Always prefer native value-initialization (`{}`) for local arrays and rely on standard library container behaviors like `std::vector<T>(size)` when allocating zeroed memory continuously, especially for multi-dimensional data layouts.
