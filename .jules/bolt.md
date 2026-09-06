@@ -1,0 +1,3 @@
+## 2024-09-06 - [Vector Array Initialization]
+**Learning:** In C++, explicit loop assignments or `make_array(0)` to initialize a `std::vector` of `std::array` incurs overhead and prevents native memory clearing. Native value-initialization of vector items natively handles zeroes much more efficiently, and trailing element initialization in array operations can also benefit from native value-initialization (`{}`).
+**Action:** When zero-initializing a vector of arrays, use `std::vector<std::array<T, N>>(size)` without an explicit array prototype. For partial arrays, value-initialize using `std::array<T, N>{}` instead of manual assignment loops.

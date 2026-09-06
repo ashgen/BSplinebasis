@@ -74,9 +74,9 @@ namespace bspline::internal {
         if constexpr (sizeout == sizein)
             return in;
         else {
-            std::array<T, sizeout> ret;
+            // Bolt: Use value-initialization to natively zero-fill all elements efficiently
+            std::array<T, sizeout> ret{};
             for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
-            for (size_t i = sizein; i < sizeout; i++) ret[i] = static_cast<T>(0);
             return ret;
         }
     }
