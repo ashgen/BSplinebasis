@@ -618,9 +618,10 @@ namespace bspline {
         // Set up support and coefficients vector for the returned spline.
         Support newSupport(support0.getGrid(), startIndex.value_or(0),
                            endIndex.value_or(0));
+        // Use value-initialization for std::array instead of internal::make_array
+        // to natively zero memory faster and avoid explicit prototype copy.
         std::vector<std::array<T, order + 1>> newCoefficients(
-                newSupport.numberOfIntervals(),
-                internal::make_array<T, order + 1>(static_cast<T>(0)));
+                newSupport.numberOfIntervals());
 
         auto coeffIt = coeffsBegin;
         auto splineIt = splinesBegin;
@@ -629,20 +630,22 @@ namespace bspline {
             const auto &spline = *splineIt;
             const T coeff = *coeffIt;
 
-            for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
-                // Index of the interval relative to the global grid.
-                const size_t absoluteIndex = spline.getSupport().absoluteFromRelative(j);
+            if (!spline.getSupport().empty()) {
+                // Precalculate the absolute index offset since intervals are contiguous
+                const size_t startAbsolute = spline.getSupport().getStartIndex();
+                const size_t newSupportStartIdx =
+                        newSupport.intervalIndexFromAbsolute(startAbsolute).value();
 
-                // Index of the interval relative to the newSupport.
-                const size_t newSupportIndex =
-                        newSupport.intervalIndexFromAbsolute(absoluteIndex).value();
+                for (size_t j = 0; j < spline.getSupport().numberOfIntervals(); j++) {
+                    // Bypass .at() and relative-to-absolute indexing per interval
+                    // for hot-loop performance optimization.
+                    const std::array<T, order + 1> &splineCoeffs =
+                            spline.getCoefficients()[j];
+                    std::array<T, order + 1> &newCoeffs = newCoefficients[newSupportStartIdx + j];
 
-                const std::array<T, order + 1> &splineCoeffs =
-                        spline.getCoefficients().at(j);
-                std::array<T, order + 1> &newCoeffs = newCoefficients.at(newSupportIndex);
-
-                for (size_t k = 0; k < order + 1; k++) {
-                    newCoeffs[k] += coeff * splineCoeffs[k];
+                    for (size_t k = 0; k < order + 1; k++) {
+                        newCoeffs[k] += coeff * splineCoeffs[k];
+                    }
                 }
             }
 

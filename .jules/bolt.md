@@ -1,0 +1,3 @@
+## 2024-05-23 - [Optimized linearCombination coefficient allocation and inner loop traversal]
+**Learning:** In C++, `std::vector<std::array<T, N>>(size)` uses value-initialization which implicitly zeros all elements directly in memory without the overhead of explicit array prototype copying. Additionally, inside hot inner loops, avoiding repeated `.at()` boundaries checks and computationally redundant relative-to-absolute index conversions significantly cuts overhead.
+**Action:** When bulk allocating vectors of fixed-size arrays that need zeroing, prefer value-initialization (`std::vector<std::array<T, N>>(size)`) over passing a zero-filled `make_array` prototype. When looping over contiguous data structures, compute starting index offsets outside the inner loop.
