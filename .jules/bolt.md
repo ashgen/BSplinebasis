@@ -1,0 +1,3 @@
+## 2024-09-10 - Value-initialization in C++
+**Learning:** In C++, prefer value-initialization for arrays (`std::array<T, N> arr{};`) over explicit zero-filling. When zero-initializing a vector of arrays, use `std::vector<std::array<T, N>>(size)` as it natively zeroes memory continuously and is significantly faster than explicitly constructing prototype arrays and copying (e.g., using `make_array(0)`).
+**Action:** Apply this optimization to vector initializations, specifically targeting the `linearCombination` method in `include/bspline/Spline.h` which currently explicitly initializes the vector with zeroes.
