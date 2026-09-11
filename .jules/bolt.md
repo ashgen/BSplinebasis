@@ -1,0 +1,3 @@
+## 2024-10-02 - Value-initialization for std::array in vectors
+**Learning:** When creating a `std::vector` of `std::array` in C++, utilizing the vector size constructor (e.g. `std::vector<std::array<T, N>>(size)`) natively zero-initializes the continuous memory block significantly faster than explicitly passing a prototype array (like `make_array(0)`) to the constructor which requires unnecessary copying.
+**Action:** Avoid explicit zero-filling or passing prototype elements to std::vector when default value-initialization natively zeroes elements, particularly in performance-sensitive computational code using `std::array`.
