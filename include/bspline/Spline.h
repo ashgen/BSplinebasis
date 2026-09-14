@@ -337,9 +337,9 @@ namespace bspline {
                     "The assignment operator is only defined if the order of the rhs "
                     "spline is lower than or equal to that of the lhs spline.");
 
-            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(
-                    a.getCoefficients().size(),
-                    internal::make_array<T, ARRAY_SIZE>(static_cast<T>(0)));
+            // Use value-initialization which is significantly faster than explicitly
+            // filling via make_array, as it allows the compiler to optimize the memory zeroing.
+            std::vector<std::array<T, ARRAY_SIZE>> ncoefficients(a.getCoefficients().size());
             for (size_t i = 0; i < a.getCoefficients().size(); i++) {
                 const auto &coeffsi = a.getCoefficients()[i];
                 auto &ncoeffsi = ncoefficients[i];
@@ -371,8 +371,9 @@ namespace bspline {
             if (nintervals == 0)
                 return Spline<T, NEW_ORDER>(std::move(newSupport), {});// No overlap
 
-            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
-                    nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+            // Use value-initialization which is significantly faster than explicitly
+            // filling via make_array, as it allows the compiler to optimize the memory zeroing.
+            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(nintervals);
 
             for (size_t i = 0; i < nintervals; i++) {
                 const auto ai = newSupport.absoluteFromRelative(i);
@@ -618,9 +619,9 @@ namespace bspline {
         // Set up support and coefficients vector for the returned spline.
         Support newSupport(support0.getGrid(), startIndex.value_or(0),
                            endIndex.value_or(0));
-        std::vector<std::array<T, order + 1>> newCoefficients(
-                newSupport.numberOfIntervals(),
-                internal::make_array<T, order + 1>(static_cast<T>(0)));
+        // Use value-initialization which is significantly faster than explicitly
+        // filling via make_array, as it allows the compiler to optimize the memory zeroing.
+        std::vector<std::array<T, order + 1>> newCoefficients(newSupport.numberOfIntervals());
 
         auto coeffIt = coeffsBegin;
         auto splineIt = splinesBegin;
