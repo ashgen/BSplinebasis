@@ -1,0 +1,3 @@
+## 2024-05-24 - Array Value-Initialization Optimization
+**Learning:** In C++, `std::vector<std::array<T, N>>(size)` natively value-initializes and zeroes memory continuously, often reducing to a highly optimized `memset` under the hood. Constructing a prototype zero array and copying it (e.g., `std::vector<std::array<T, N>>(size, make_array(0))`) bypasses this optimization and causes a significant performance penalty.
+**Action:** Always prefer value-initialization (`std::array<T, N> arr{};`) over explicit zero-filling for arrays, and use `std::vector<T>(size)` when zero-initializing a vector of arrays.
