@@ -371,8 +371,8 @@ namespace bspline {
             if (nintervals == 0)
                 return Spline<T, NEW_ORDER>(std::move(newSupport), {});// No overlap
 
-            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(
-                    nintervals, internal::make_array<T, NEW_ARRAY_SIZE>(static_cast<T>(0)));
+            // Optimization: value-initialization zero-initializes the arrays efficiently, avoiding explicit construction loops.
+            std::vector<std::array<T, NEW_ARRAY_SIZE>> newCoefficients(nintervals);
 
             for (size_t i = 0; i < nintervals; i++) {
                 const auto ai = newSupport.absoluteFromRelative(i);
@@ -618,9 +618,8 @@ namespace bspline {
         // Set up support and coefficients vector for the returned spline.
         Support newSupport(support0.getGrid(), startIndex.value_or(0),
                            endIndex.value_or(0));
-        std::vector<std::array<T, order + 1>> newCoefficients(
-                newSupport.numberOfIntervals(),
-                internal::make_array<T, order + 1>(static_cast<T>(0)));
+        // Optimization: value-initialization zero-initializes the arrays efficiently, avoiding explicit construction loops.
+        std::vector<std::array<T, order + 1>> newCoefficients(newSupport.numberOfIntervals());
 
         auto coeffIt = coeffsBegin;
         auto splineIt = splinesBegin;
