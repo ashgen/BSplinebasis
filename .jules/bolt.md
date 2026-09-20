@@ -1,0 +1,3 @@
+## 2024-05-01 - Initial Setup
+**Learning:** Start optimization task. Value-initialization of `std::array` and default vector constructors for value-initialized array zero-filling are far faster than manual zeroing with `internal::make_array` or explicit object generation. In `include/bspline/Spline.h` there are multiple occurrences of initializing a vector of arrays by filling it with `internal::make_array(...)`.
+**Action:** Replace `internal::make_array` vector initialization with standard vector constructor (e.g., `std::vector<std::array<T, NEW_ARRAY_SIZE>>(nintervals)` instead of passing `internal::make_array...` as the second argument) to optimize allocation and zeroing performance. Apply value-initialization to uninitialized local arrays where possible.
