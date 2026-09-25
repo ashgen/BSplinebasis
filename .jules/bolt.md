@@ -1,0 +1,3 @@
+## 2026-09-25 - Optimize math utility functions with constexpr
+**Learning:** Functions like `faculty`, `facultyRatio`, and `binomialCoefficient` perform deterministic calculations often evaluated with constant inputs (e.g., template parameters or polynomial orders) throughout the library. C++ allows leveraging `constexpr` to let the compiler perform these evaluations at compile-time instead of runtime.
+**Action:** Marked these pure mathematical utility functions as `constexpr` to enable constant folding, which significantly reduces execution time by avoiding runtime loop overhead for statically known parameters.
