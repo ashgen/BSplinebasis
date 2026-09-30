@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimize array value-initialization
+**Learning:** In C++, explicitly zero-filling a vector of `std::array` by passing a prototype (e.g., `make_array(0)`) is less efficient than using value-initialization (`std::vector<std::array<T, N>>(size)`), which natively zeroes memory continuously and often reduces to a highly optimized `memset`. In loops, explicitly re-assigning zeroed arrays to value-initialized vector elements is redundant overhead.
+**Action:** Prefer `std::vector<T>(size)` for native value-initialization over explicit zero-prototype copying. Avoid redundant re-zeroing of elements in value-initialized collections. Use aggregate initialization (`std::array<T, N> arr{};`) for local variables instead of explicit function-based zero-filling.
