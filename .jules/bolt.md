@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimize array value-initialization
+**Learning:** In C++, value-initializing `std::vector` of `std::array` via `std::vector<std::array<T, N>>(size)` is significantly faster (can be optimized to memset) than explicitly passing a zero-initialized prototype array (which does copy-construction). Aggregate initialization `std::array<T, N>{}` is also faster than explicit zero-filling functions for local variables.
+**Action:** Prefer `std::vector<std::array<T, N>>(size)` over explicit prototype copying, and use aggregate initialization `std::array<T, N>{}` instead of custom zero-fill functions for local variables.
