@@ -113,8 +113,10 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The faculty \f$n!\f$.
  */
+    // Bolt optimization: marked constexpr to enable constant folding at compile-time
+    // when order calculations are performed, significantly eliminating runtime loops.
     template<typename T>
-    T faculty(size_t n) {
+    constexpr T faculty(size_t n) {
         T retVal = static_cast<T>(1);
         for (size_t i = 2; i <= n; i++) {
             retVal *= static_cast<T>(i);
@@ -130,8 +132,10 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The value of the faculty ratio.
  */
+    // Bolt optimization: marked constexpr to enable constant folding at compile-time
+    // when order calculations are performed, significantly eliminating runtime loops.
     template<typename T>
-    T facultyRatio(size_t counter, size_t denominator) {
+    constexpr T facultyRatio(size_t counter, size_t denominator) {
         if (denominator > counter) {
             return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
         } else {
@@ -152,14 +156,16 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The value of the binomial coefficient
  */
+    // Bolt optimization: marked constexpr to enable constant folding at compile-time
+    // when order calculations are performed, significantly eliminating runtime loops.
     template<typename T>
-    T binomialCoefficient(size_t n, size_t k) {
+    constexpr T binomialCoefficient(size_t n, size_t k) {
         if (k > n) {
             return static_cast<T>(0);
         }
 
-        const size_t smaller = std::min(k, n - k);
-        const size_t larger = std::max(k, n - k);
+        const size_t smaller = (k < n - k) ? k : (n - k);
+        const size_t larger = (k > n - k) ? k : (n - k);
 
         return facultyRatio<T>(n, larger) / faculty<T>(smaller);
     }
