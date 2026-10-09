@@ -74,9 +74,10 @@ namespace bspline::internal {
         if constexpr (sizeout == sizein)
             return in;
         else {
-            std::array<T, sizeout> ret;
+            // Bolt optimization: use aggregate initialization to zero-fill the array
+            // instead of a manual loop for better compiler optimization.
+            std::array<T, sizeout> ret{};
             for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
-            for (size_t i = sizein; i < sizeout; i++) ret[i] = static_cast<T>(0);
             return ret;
         }
     }
