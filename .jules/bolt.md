@@ -1,0 +1,3 @@
+## 2024-05-30 - Optimize array value-initialization
+**Learning:** In C++, when zero-initializing an array or a vector of arrays, using `std::vector<std::array<T, N>>(size)` is significantly faster than explicit zero-filling (e.g. `std::vector<std::array<T, N>>(size, make_array(0))`) since it natively value-initializes and reduces to an optimized memory set under the hood. Also, aggregate initialization (`std::array<T, N> arr{};`) is cleaner and more optimal than a function wrapper like `make_array(0)`.
+**Action:** Replace calls to `make_array(0)` when creating arrays or vectors with aggregate initialization or default construction, specifically in `Spline.h` and `SplineOperator.h`.
