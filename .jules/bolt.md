@@ -1,0 +1,3 @@
+## 2023-10-11 - Optimize std::array initialization
+**Learning:** Found explicit calls to `make_array<T, size>(0)` inside vector size initializations in `Spline.h` and `SplineOperator.h`. Initializing a vector with a size (e.g. `std::vector<std::array<T, size>> vec(size)`) already value-initializes elements (i.e. zeros for `std::array` of scalars). Using `make_array` is redundant and slower because it constructs an object, fills it, and copies it. Even when just initializing a local `std::array`, using aggregate initialization (`std::array<T, size> arr{};`) is faster as it's optimized into a fast `memset`.
+**Action:** Replace `make_array<T, size>(0)` with value initialization. Avoid it in vector initialization.
