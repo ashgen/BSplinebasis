@@ -1,0 +1,4 @@
+## 2024-05-24 - Array Value-Initialization Optimization
+
+**Learning:** When vectors of `std::array` are created with a size parameter in C++ (like `std::vector<std::array<T, N>>(size)`), the elements are automatically value-initialized (which zero-initializes them if `T` is a scalar type like `double`). Explicitly initializing them using a custom `make_array<T, N>(0)` method causes a significant performance overhead by forcing unnecessary array copies instead of utilizing the underlying highly-optimized `memset`-like initialization of the vector constructor.
+**Action:** When initializing a vector of arrays with zeros, rely on the default vector constructor `std::vector<std::array<T, N>>(size)` rather than passing an explicit default value like `make_array<T, N>(0)`. Similarly, prefer aggregate initialization (`std::array<T, N> arr{}`) for local arrays.
