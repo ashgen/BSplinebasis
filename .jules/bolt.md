@@ -1,0 +1,3 @@
+## 2023-10-16 - Make faculty and binomialCoefficient constexpr
+**Learning:** Marking pure mathematical utility functions like factorials and binomial coefficients as `constexpr` enables aggressive constant folding at compile-time when parameters are known (e.g. template arguments or fixed constants). This reduces runtime evaluation overhead drastically, which is extremely important for a highly templated BSpline calculation library where order and binomial coefficients are heavily referenced.
+**Action:** Always mark standalone pure mathematical template functions as `constexpr` in a C++ library to allow optimal compile-time evaluation.
