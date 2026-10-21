@@ -109,12 +109,17 @@ namespace bspline::internal {
     /*!
  * Returns the faculty \f$n!\f$.
  *
+ * ⚡ Bolt Optimization:
+ * Added `constexpr` keyword to allow compile-time evaluation (constant folding).
+ * When `n` is a compile-time constant, this avoids runtime loops entirely.
+ * Expected Impact: Eliminates runtime overhead for static template calculations.
+ *
  * @param n The value to calculate the faculty of.
  * @tparam T The datatype of the return type.
  * @returns The faculty \f$n!\f$.
  */
     template<typename T>
-    T faculty(size_t n) {
+    constexpr T faculty(size_t n) {
         T retVal = static_cast<T>(1);
         for (size_t i = 2; i <= n; i++) {
             retVal *= static_cast<T>(i);
@@ -125,13 +130,18 @@ namespace bspline::internal {
     /*!
  * Returns the faculty ratio \f[\frac{counter!}{denominator!}\f].
  *
+ * ⚡ Bolt Optimization:
+ * Added `constexpr` keyword to allow compile-time evaluation (constant folding).
+ * When inputs are compile-time constants, this avoids runtime loops entirely.
+ * Expected Impact: Eliminates runtime overhead for static template calculations.
+ *
  * @param counter The faculty of this value is the counter.
  * @param denominator The faculty of this value is the denominator.
  * @tparam T The datatype of the return type.
  * @returns The value of the faculty ratio.
  */
     template<typename T>
-    T facultyRatio(size_t counter, size_t denominator) {
+    constexpr T facultyRatio(size_t counter, size_t denominator) {
         if (denominator > counter) {
             return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
         } else {
@@ -147,13 +157,21 @@ namespace bspline::internal {
  * Returns the binomial coefficient \f[\frac{n!}{k!\,(n-k)!]}\f].
  * Returns zero if \f$k > n\f$.
  *
+ * ⚡ Bolt Optimization:
+ * Added `constexpr` keyword to allow compile-time evaluation (constant folding).
+ * When `n` and `k` are compile-time constants (e.g., in expandPower where n and i
+ * are template/loop constants), this completely unrolls and pre-calculates the
+ * binomial coefficient at compile time.
+ * Expected Impact: Eliminates runtime overhead for static calculations, highly
+ * effective inside performance-critical numerical operators.
+ *
  * @param n The first parameter.
  * @param k The second parameter.
  * @tparam T The datatype of the return type.
  * @returns The value of the binomial coefficient
  */
     template<typename T>
-    T binomialCoefficient(size_t n, size_t k) {
+    constexpr T binomialCoefficient(size_t n, size_t k) {
         if (k > n) {
             return static_cast<T>(0);
         }
