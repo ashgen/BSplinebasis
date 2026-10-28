@@ -1,0 +1,3 @@
+## 2024-05-24 - Optimization: Use `constexpr` and Aggregate Initialization for Array Generation
+**Learning:** Found instances where arrays were initialized via `make_array` with explicit value fills and plain iteration. Additionally, pure math utility functions were not `constexpr`. Making utilities `constexpr` and using aggregate initialization (`std::array<T, size>{}`) allows significant optimizations, especially in numerical/basis code.
+**Action:** Apply `constexpr` to internal math functions like `faculty`, `facultyRatio`, and `binomialCoefficient`. Optimize array initialization by replacing `make_array(0)` with aggregate zero-initialization `std::array<T, N>{}` which is often better optimized by the compiler as continuous memory zeroing.
