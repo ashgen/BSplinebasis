@@ -25,6 +25,12 @@ namespace bspline::operators {
     template<size_t n>
     class Position final : public Operator {
     private:
+        // Pre-computes binomial coefficients at compile time
+        template<typename T, size_t... Is>
+        static constexpr std::array<T, n + 1> getBinomials(std::index_sequence<Is...>) {
+            return {internal::binomialCoefficient<T>(n, Is)...};
+        }
+
         /*!
    * Expands \f$(x + x_m)^n\f$.
    *
@@ -35,9 +41,10 @@ namespace bspline::operators {
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
             std::array<T, n + 1> retVal;
+            constexpr auto binomials = getBinomials<T>(std::make_index_sequence<n + 1>{});
             T power_of_xm = static_cast<T>(1);
             for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                retVal[n - i] = binomials[i] * power_of_xm;
                 power_of_xm *= xm;
             }
             return retVal;
