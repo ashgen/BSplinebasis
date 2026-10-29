@@ -1,0 +1,7 @@
+## 2023-10-29 - Optimize array initialization
+**Learning:** Found custom `make_array(0)` to initialize `std::array` with zeros, but for large iterations and inner loops, this incurs overhead compared to simply using aggregate initialization `std::array<T, N>{}` which guarantees value-initialization (zeroing out). We also learned that allocating `std::vector<std::array<T, N>>` zeroes memory by default, so we don't need to explicitly pass a zeroed array unless resizing. We will optimize this array initialization.
+**Action:** Replace `internal::make_array<T, N>(static_cast<T>(0))` with aggregate initialization or directly rely on `std::vector` constructor's default initialization when applicable.
+
+## 2023-10-29 - Pre-computing Binomial Coefficients using Constexpr
+**Learning:** In polynomial expansion math calculations (`expandPower` in `Position.h`), binomial coefficients are recalculated during every call, adding significant overhead (~580ms). By applying `constexpr` to `faculty`, `facultyRatio`, and `binomialCoefficient` and leveraging `std::index_sequence` to precompute the coefficients in an array at compile time, the runtime overhead shrinks to near-zero (~23ms) because the binomial coefficient calculation is done once by the compiler.
+**Action:** Always prefer compile-time evaluation (constexpr + std::index_sequence) for constant mathematical calculations like binomial coefficients or factorials that depend only on template parameters (`n` and `i`).
