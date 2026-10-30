@@ -1,0 +1,3 @@
+## 2024-05-19 - Vector Value-Initialization over `make_array`
+**Learning:** `std::vector<std::array<T, N>>(size)` automatically value-initializes elements (equivalent to zeroing memory when T is a fundamental type). Using an explicit function like `make_array(0.0)` in the vector constructor (`std::vector<std::array<T, N>>(size, make_array<T,N>(0.0))`) incurs unnecessary O(N) explicit element-wise copying/zeroing. Replacing it with default value-initialization saves measurable execution time when initializing many coefficients.
+**Action:** Prefer `std::vector<std::array<T, N>>(size)` when a fully zero-initialized vector of arrays is needed. Only use prototype values when initializing with non-zero arrays.
