@@ -25,6 +25,11 @@ namespace bspline::operators {
     template<size_t n>
     class Position final : public Operator {
     private:
+        template<typename T, size_t... Is>
+        static constexpr std::array<T, n + 1> precomputeBinomials(std::index_sequence<Is...>) {
+            return std::array<T, n + 1>{internal::binomialCoefficient<T>(n, Is)...};
+        }
+
         /*!
    * Expands \f$(x + x_m)^n\f$.
    *
@@ -34,10 +39,12 @@ namespace bspline::operators {
    */
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
+            constexpr auto binomials = precomputeBinomials<T>(std::make_index_sequence<n + 1>{});
+            // Default initialization for performance, as all elements are overwritten
             std::array<T, n + 1> retVal;
             T power_of_xm = static_cast<T>(1);
             for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                retVal[n - i] = binomials[i] * power_of_xm;
                 power_of_xm *= xm;
             }
             return retVal;
@@ -78,8 +85,8 @@ namespace bspline::operators {
 
             const std::array<T, n + 1> expanded = expandPower<T>(xm);
 
-            std::array<T, OUTPUT_SIZE> retVal;
-            retVal.fill(static_cast<T>(0));
+            // Aggregate initialization avoids explicitly looping to fill the array with zeros
+            std::array<T, OUTPUT_SIZE> retVal{};
 
             for (size_t i = 0; i < input.size(); i++) {
                 for (size_t j = 0; j < expanded.size(); j++) {
