@@ -22,6 +22,11 @@ namespace bspline::operators {
  *
  * @tparam n Order of the power.
  */
+    template<size_t n, typename T, size_t... Is>
+    constexpr std::array<T, n + 1> precompute_coeffs(std::index_sequence<Is...>) {
+        return {internal::binomialCoefficient<T>(n, Is)...};
+    }
+
     template<size_t n>
     class Position final : public Operator {
     private:
@@ -34,10 +39,11 @@ namespace bspline::operators {
    */
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
+            constexpr auto coeffs = precompute_coeffs<n, T>(std::make_index_sequence<n + 1>{});
             std::array<T, n + 1> retVal;
             T power_of_xm = static_cast<T>(1);
             for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                retVal[n - i] = coeffs[i] * power_of_xm;
                 power_of_xm *= xm;
             }
             return retVal;
@@ -78,8 +84,8 @@ namespace bspline::operators {
 
             const std::array<T, n + 1> expanded = expandPower<T>(xm);
 
-            std::array<T, OUTPUT_SIZE> retVal;
-            retVal.fill(static_cast<T>(0));
+            // ⚡ Bolt: Using aggregate initialization is faster than explicit fill(0)
+            std::array<T, OUTPUT_SIZE> retVal{};
 
             for (size_t i = 0; i < input.size(); i++) {
                 for (size_t j = 0; j < expanded.size(); j++) {
