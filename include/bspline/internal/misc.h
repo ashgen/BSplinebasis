@@ -26,9 +26,11 @@ namespace bspline::internal {
  * @returns An array filled with the value val.
  */
     template<typename T, size_t size>
-    std::array<T, size> make_array(T val) {
-        std::array<T, size> ret;
-        ret.fill(val);
+    constexpr std::array<T, size> make_array(T val) {
+        std::array<T, size> ret{};
+        for (size_t i = 0; i < size; ++i) {
+            ret[i] = val;
+        }
         return ret;
     }
 
@@ -44,7 +46,7 @@ namespace bspline::internal {
  * @returns An array representing the sum of the two input arrays.
  */
     template<typename T, size_t sizea, size_t sizeb>
-    std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
+    constexpr std::array<T, std::max(sizea, sizeb)> add(const std::array<T, sizea> &a,
                                               const std::array<T, sizeb> &b) {
         if constexpr (sizeb > sizea) {
             return add(b, a);
@@ -68,13 +70,13 @@ namespace bspline::internal {
  * @returns The array.
  */
     template<typename T, size_t sizein, size_t sizeout>
-    std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
+    constexpr std::array<T, sizeout> changearraysize(const std::array<T, sizein> &in) {
         static_assert(sizeout >= sizein,
                       "sizeout must be bigger or equal to sizein.");
         if constexpr (sizeout == sizein)
             return in;
         else {
-            std::array<T, sizeout> ret;
+            std::array<T, sizeout> ret{};
             for (size_t i = 0; i < sizein; i++) ret[i] = in[i];
             for (size_t i = sizein; i < sizeout; i++) ret[i] = static_cast<T>(0);
             return ret;
@@ -96,7 +98,7 @@ namespace bspline::internal {
  * polynomial plus one).
  */
     template<typename T, size_t size>
-    T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
+    constexpr T evaluateInterval(const T &x, const std::array<T, size> &coeffs, const T &xm) {
         // Use Horner's scheme to evaluate.
         const T dx = x - xm;
         T result = coeffs.back();
@@ -114,7 +116,7 @@ namespace bspline::internal {
  * @returns The faculty \f$n!\f$.
  */
     template<typename T>
-    T faculty(size_t n) {
+    constexpr T faculty(size_t n) {
         T retVal = static_cast<T>(1);
         for (size_t i = 2; i <= n; i++) {
             retVal *= static_cast<T>(i);
@@ -131,7 +133,7 @@ namespace bspline::internal {
  * @returns The value of the faculty ratio.
  */
     template<typename T>
-    T facultyRatio(size_t counter, size_t denominator) {
+    constexpr T facultyRatio(size_t counter, size_t denominator) {
         if (denominator > counter) {
             return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
         } else {
@@ -153,7 +155,7 @@ namespace bspline::internal {
  * @returns The value of the binomial coefficient
  */
     template<typename T>
-    T binomialCoefficient(size_t n, size_t k) {
+    constexpr T binomialCoefficient(size_t n, size_t k) {
         if (k > n) {
             return static_cast<T>(0);
         }

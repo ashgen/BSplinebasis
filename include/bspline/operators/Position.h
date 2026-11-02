@@ -34,11 +34,15 @@ namespace bspline::operators {
    */
         template<typename T>
         static std::array<T, n + 1> expandPower(const T &xm) {
-            std::array<T, n + 1> retVal;
-            T power_of_xm = static_cast<T>(1);
-            for (size_t i = 0; i < n + 1; i++) {
-                retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
-                power_of_xm *= xm;
+            std::array<T, n + 1> retVal{};
+            if constexpr (n == 0) {
+                retVal[0] = static_cast<T>(1);
+            } else {
+                T power_of_xm = static_cast<T>(1);
+                for (size_t i = 0; i < n + 1; i++) {
+                    retVal[n - i] = internal::binomialCoefficient<T>(n, i) * power_of_xm;
+                    power_of_xm *= xm;
+                }
             }
             return retVal;
         }
@@ -78,8 +82,7 @@ namespace bspline::operators {
 
             const std::array<T, n + 1> expanded = expandPower<T>(xm);
 
-            std::array<T, OUTPUT_SIZE> retVal;
-            retVal.fill(static_cast<T>(0));
+            std::array<T, OUTPUT_SIZE> retVal{};
 
             for (size_t i = 0; i < input.size(); i++) {
                 for (size_t j = 0; j < expanded.size(); j++) {
