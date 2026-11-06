@@ -8,7 +8,9 @@
 #ifndef BSPLINE_MISC_H
 #define BSPLINE_MISC_H
 
+#include <algorithm>
 #include <array>
+#include <cstddef>
 
 #ifndef BSPLINE_DOXYGEN_IGNORE
 /*!
@@ -113,8 +115,9 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The faculty \f$n!\f$.
  */
+    // Optimized: Marking as constexpr allows constant folding at compile-time for known parameters, avoiding loop overhead.
     template<typename T>
-    T faculty(size_t n) {
+    constexpr T faculty(size_t n) {
         T retVal = static_cast<T>(1);
         for (size_t i = 2; i <= n; i++) {
             retVal *= static_cast<T>(i);
@@ -130,8 +133,9 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The value of the faculty ratio.
  */
+    // Optimized: Marking as constexpr allows constant folding at compile-time for known parameters, avoiding loop overhead.
     template<typename T>
-    T facultyRatio(size_t counter, size_t denominator) {
+    constexpr T facultyRatio(size_t counter, size_t denominator) {
         if (denominator > counter) {
             return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
         } else {
@@ -152,8 +156,9 @@ namespace bspline::internal {
  * @tparam T The datatype of the return type.
  * @returns The value of the binomial coefficient
  */
+    // Optimized: Marking as constexpr allows constant folding at compile-time for known parameters, avoiding loop overhead.
     template<typename T>
-    T binomialCoefficient(size_t n, size_t k) {
+    constexpr T binomialCoefficient(size_t n, size_t k) {
         if (k > n) {
             return static_cast<T>(0);
         }
