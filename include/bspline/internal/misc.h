@@ -8,6 +8,7 @@
 #ifndef BSPLINE_MISC_H
 #define BSPLINE_MISC_H
 
+#include <algorithm>
 #include <array>
 
 #ifndef BSPLINE_DOXYGEN_IGNORE
@@ -16,21 +17,6 @@
  * library.
  */
 namespace bspline::internal {
-
-    /*!
- * Creates an std::array<T, size> with all values set to val.
- *
- * @param val Value to initialise the members of the array with.
- * @tparam T Datatype of the array.
- * @tparam size Size of the array.
- * @returns An array filled with the value val.
- */
-    template<typename T, size_t size>
-    std::array<T, size> make_array(T val) {
-        std::array<T, size> ret;
-        ret.fill(val);
-        return ret;
-    }
 
     /*!
  * Adds two vectors, taking into account that one vector might be longer than
@@ -114,7 +100,7 @@ namespace bspline::internal {
  * @returns The faculty \f$n!\f$.
  */
     template<typename T>
-    T faculty(size_t n) {
+    constexpr T faculty(size_t n) {
         T retVal = static_cast<T>(1);
         for (size_t i = 2; i <= n; i++) {
             retVal *= static_cast<T>(i);
@@ -131,7 +117,7 @@ namespace bspline::internal {
  * @returns The value of the faculty ratio.
  */
     template<typename T>
-    T facultyRatio(size_t counter, size_t denominator) {
+    constexpr T facultyRatio(size_t counter, size_t denominator) {
         if (denominator > counter) {
             return static_cast<T>(1) / facultyRatio<T>(denominator, counter);
         } else {
@@ -153,7 +139,7 @@ namespace bspline::internal {
  * @returns The value of the binomial coefficient
  */
     template<typename T>
-    T binomialCoefficient(size_t n, size_t k) {
+    constexpr T binomialCoefficient(size_t n, size_t k) {
         if (k > n) {
             return static_cast<T>(0);
         }
