@@ -1,0 +1,3 @@
+## 2024-05-18 - C++ Compile-time Precomputation for Spline Operators
+**Learning:** Mathematical utility functions in `bspline::internal` (`faculty`, `facultyRatio`, `binomialCoefficient`) were heavily used in runtime loops inside template functions like `expandPower` (in `Position.h`). Because the template parameter `n` is known at compile-time, we can mark these utilities `constexpr` and precompute the coefficients in an immediately-invoked lambda. This changes a relatively expensive runtime loop with factorials/divisions into a simple compile-time array lookup, massively reducing overhead.
+**Action:** In heavily-templated C++ code, always check if template arguments can be used to precompute constant arrays using C++17 `constexpr` lambdas.
