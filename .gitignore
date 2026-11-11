@@ -8,3 +8,8 @@
 **/html/**
 .project
 .metadata/**
+
+build/
+test_*
+plan.txt
+plan_review_request.md
